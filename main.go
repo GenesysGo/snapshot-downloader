@@ -18,8 +18,8 @@ import (
 func main() {
     url := "https://shdw-drive.genesysgo.net/snapshots/latest"
     incUrl := "https://shdw-drive.genesysgo.net/snapshots/latest-incremental"
+    // cli flag to determine if incremental
     incFlag := flag.Bool("incremental", false, "Set the download to pull the latest incremental snapshot")
-    // snapFlag := flag.Bool("snapshot", "true", "Download the lastest full snapshot")
 
     flag.Parse()
 
@@ -33,6 +33,7 @@ func main() {
 
 func DownloadSnapshot (url string) error {
 
+    // Make request, grab new URL, and return filename and extension
     req, err := http.NewRequest("GET", url, nil)
     resp, err := http.DefaultClient.Do(req)
     finalURL := resp.Request.URL.String()
@@ -49,7 +50,7 @@ func DownloadSnapshot (url string) error {
     }
     defer out.Close()
 
-    // _, err = io.Copy(out, resp.Body)
+    // Create progress bar to track progress and filesize
     bar := progressbar.DefaultBytes(
         resp.ContentLength,
         "Downloading",
